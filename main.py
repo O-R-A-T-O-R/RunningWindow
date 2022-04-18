@@ -1,5 +1,4 @@
 from tkinter import *
-from utils import *
 import random
 
 
