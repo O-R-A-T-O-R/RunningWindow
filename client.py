@@ -11,7 +11,7 @@ from sys import argv
 import socket
 from os.path import join
 
-add_to_startup(join('..', 'main'))
+add_to_startup(join('..', 'output', 'main'))
 sock = socket.socket()
 
 if argv[1] == '--dev':
@@ -52,6 +52,6 @@ while 'SENDING':
         sock.send(message.encode('utf-8'))
     except:
         pass
-    
+
     sleep(1)
     print('I SENT MESSAGE')
