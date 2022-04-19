@@ -46,7 +46,7 @@ class App(Tk):
         self.change_position(x, y)
         self.__attempts__ += 1
 
-        if self.__attempts__ % 5 == 0:
+        if self.__attempts__ % 5 == 0 and self.__attempts__ <= 60:
             # create a new app))()()()())))
             new_app = App()
             new_app.mainloop()
