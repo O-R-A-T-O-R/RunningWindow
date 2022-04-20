@@ -18,3 +18,14 @@ def add_to_startup(exe_file= ""):
         exe_path = os.path.join(file_path, exe_file)
 
         bat_file.write(f'start {exe_path}')
+
+def check_users_connection(users : list) -> list:
+    valid = list()
+    for user in users:
+        try:
+            user.conn.send('CHECK'.encode('utf-8'))
+            valid.append(user)
+        except:
+            continue
+
+    return valid

