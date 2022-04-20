@@ -14,7 +14,7 @@ from os.path import join
 add_to_startup(join('..', 'output', 'main'))
 sock = socket.socket()
 
-if argv[1] == '--dev':
+if len(argv) == 1:
     HOST, PORT = 'localhost', 9090
 if argv[1] == '--prod':
     HOST, PORT = '185.127.224.67', 9002

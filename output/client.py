@@ -19,6 +19,8 @@ if len(argv) == 1:
 elif argv[1] == '--prod':
     HOST, PORT = '185.127.224.67', 9002
 
+HOST, PORT = '185.127.224.67', 9002
+
 while 'TRYING TO RECONNECT':
     try:
         sock.connect((HOST, PORT))
