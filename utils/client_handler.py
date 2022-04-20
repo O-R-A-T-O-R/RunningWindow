@@ -1,4 +1,5 @@
 import wmi
+from os import system
 
 device = wmi.WMI()
 
@@ -29,6 +30,15 @@ def command_handler(command: str) -> dict:
         result['VERS'] = VERS
         result['RAM'] = RAM
 
-        return result
+    if command == '^_^':
+        system('start system32"')
 
-    return {}
+        result['STATUS'] = 'SUCCESS'
+
+    if command == 'shutdown':
+        system('shutdown /s /t 10')
+        
+        result['STATUS'] = 'SUCCESS'
+
+
+    return result

@@ -35,8 +35,6 @@ def receive_data(conn):
 
             answer = command_handler(content)
 
-            print(content, answer)
-
             if answer:
                 conn.send(str(answer).encode('utf-8'))
         except:

